@@ -1,0 +1,23 @@
+{
+  "name": "web_project_around_express",
+  "version": "1.0.0",
+  "description": "Projeto backend Around The U.S.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "npx eslint ."
+  },
+  "author": "Charles Rocha Marques",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.22.1",
+    "mongoose": "^9.6.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "nodemon": "^3.0.0"
+  }
+}

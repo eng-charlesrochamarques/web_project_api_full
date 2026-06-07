@@ -1,0 +1,9 @@
+{
+  "extends": "airbnb-base",
+  "ignorePatterns": ["data/*.json"],
+  "rules": {
+    "no-console": "off",
+    "linebreak-style": "off",
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+  },
+}
