@@ -1,12 +1,20 @@
+import { useContext } from "react";
+import CurrentUserContext from "../../../../contexts/CurrentUserContext";
+
 export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
+  const { currentUser } = useContext(CurrentUserContext);
   const { name, link } = card;
-  const isLiked = card.isLiked;
+
+  const isLiked = card.likes.some((userId) => userId === currentUser._id);
+
   function handleLikeClick() {
     onCardLike(card);
   }
+
   function handleDeleteClick() {
     onCardDelete(card);
   }
+
   return (
     <li className="card">
       <img

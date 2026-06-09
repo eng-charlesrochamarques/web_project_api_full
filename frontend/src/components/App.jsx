@@ -107,7 +107,7 @@ function App() {
       .finally(() => setIsSavingAvatar(false));
   }
   function handleCardLike(card) {
-    const isLiked = card.isLiked;
+    const isLiked = card.likes.some((userId) => userId === currentUser._id);
 
     api
       .changeLikeCardStatus(card._id, !isLiked)

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -39,6 +40,11 @@ app.use(
     format: winston.format.json(),
   }),
 );
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("O servidor travará agora");
+  }, 0);
+});
 app.post("/signin", validateLogin, login);
 app.post("/signup", validateCreateUser, createUser);
 
