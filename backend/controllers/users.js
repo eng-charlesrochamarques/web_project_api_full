@@ -1,39 +1,82 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-const handleError = (err, res) => {
-  if (err.name === "ValidationError" || err.name === "CastError") {
-    return res.status(400).send({ message: "Dados inválidos" });
-  }
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 
-  if (err.name === "DocumentNotFoundError") {
-    return res.status(404).send({ message: "Usuário não encontrado" });
-  }
-
-  return res.status(500).send({ message: "Erro padrão" });
-};
-
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail()
     .then((user) => res.send(user))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => handleError(err, res));
+module.exports.getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail()
+    .then((user) => res.send(user))
+    .catch(next);
 };
 
-module.exports.updateProfile = (req, res) => {
+module.exports.createUser = (req, res, next) => {
+  const { name, about, avatar, email, password } = req.body;
+
+  bcrypt
+    .hash(password, 10)
+    .then((hash) =>
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      }),
+    )
+    .then((user) => {
+      const userObject = user.toObject();
+      delete userObject.password;
+
+      res.status(201).send(userObject);
+    })
+    .catch(next);
+};
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .select("+password")
+    .then((user) => {
+      if (!user) {
+        const error = new Error("E-mail ou senha incorretos");
+        error.statusCode = 401;
+        throw error;
+      }
+
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          const error = new Error("E-mail ou senha incorretos");
+          error.statusCode = 401;
+          throw error;
+        }
+
+        const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+          expiresIn: "7d",
+        });
+
+        return res.send({ token });
+      });
+    })
+    .catch(next);
+};
+
+module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -43,10 +86,10 @@ module.exports.updateProfile = (req, res) => {
   )
     .orFail()
     .then((user) => res.send(user))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -56,5 +99,5 @@ module.exports.updateAvatar = (req, res) => {
   )
     .orFail()
     .then((user) => res.send(user))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
