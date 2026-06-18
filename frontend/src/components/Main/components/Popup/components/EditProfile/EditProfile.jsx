@@ -31,15 +31,6 @@ export default function EditProfile() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    console.log("[PROFILE 2] submit disparado", {
-      formValid: e.currentTarget.checkValidity(),
-      name,
-      nameLength: name.length,
-      about: description,
-      aboutLength: description.length,
-      isSavingProfile,
-    });
-
     handleUpdateUser({
       name: name,
       about: description,
@@ -75,12 +66,6 @@ export default function EditProfile() {
         className={`button popup__button ${!isFormValid ? "popup__button_disabled" : ""}`}
         type="submit"
         disabled={!isFormValid}
-        onClick={() => {
-          console.log("[PROFILE 1] botão Salvar clicado", {
-            isFormValid,
-            isSavingProfile,
-          });
-        }}
       >
         {isSavingProfile ? "Salvando..." : "Salvar"}
       </button>

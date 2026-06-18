@@ -9,14 +9,6 @@ export default function NewCard({ onAddPlaceSubmit, isLoading }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    console.log("[CARD 2] submit disparado", {
-      formValid: e.currentTarget.checkValidity(),
-      name,
-      nameLength: name.length,
-      link,
-      isLoading,
-    });
-
     onAddPlaceSubmit({
       name,
       link,
@@ -76,12 +68,6 @@ export default function NewCard({ onAddPlaceSubmit, isLoading }) {
         className={`button popup__button ${!isFormValid ? "popup__button_disabled" : ""}`}
         type="submit"
         disabled={!isFormValid}
-        onClick={() => {
-          console.log("[CARD 1] botão Criar clicado", {
-            isFormValid,
-            isLoading,
-          });
-        }}
       >
         {isLoading ? "Criando..." : "Criar"}
       </button>
