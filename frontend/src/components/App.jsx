@@ -83,16 +83,23 @@ function App() {
     setPopup(null);
   }
   function handleUpdateUser(data) {
+    console.log("[PROFILE 3] handleUpdateUser chamado", data);
     setIsSavingProfile(true);
 
     api
       .setUserInfo(data)
       .then((newData) => {
+        console.log("[PROFILE 6] atualização concluída", newData);
         setCurrentUser(newData);
         handleClosePopup();
       })
-      .catch((error) => console.error("erro ao atualizar usuário:", error))
-      .finally(() => setIsSavingProfile(false));
+      .catch((error) =>
+        console.error("[PROFILE ERRO] falha ao atualizar usuário", error),
+      )
+      .finally(() => {
+        console.log("[PROFILE 7] fluxo finalizado");
+        setIsSavingProfile(false);
+      });
   }
   function handleUpdateAvatar(data) {
     setIsSavingAvatar(true);
@@ -142,16 +149,23 @@ function App() {
       .finally(() => setIsDeletingCard(false));
   }
   function handleAddPlaceSubmit(data) {
+    console.log("[CARD 3] handleAddPlaceSubmit chamado", data);
     setIsAddingCard(true);
 
     api
       .addCard(data)
       .then((newCard) => {
+        console.log("[CARD 6] criação concluída", newCard);
         setCards((state) => [newCard, ...state]);
         handleClosePopup();
       })
-      .catch((error) => console.error("erro ao adicionar card:", error))
-      .finally(() => setIsAddingCard(false));
+      .catch((error) =>
+        console.error("[CARD ERRO] falha ao adicionar card", error),
+      )
+      .finally(() => {
+        console.log("[CARD 7] fluxo finalizado");
+        setIsAddingCard(false);
+      });
   }
 
   function handleLogin(email, password) {
