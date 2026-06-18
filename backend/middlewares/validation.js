@@ -34,8 +34,8 @@ module.exports.validateUserId = celebrate({
 
 module.exports.validateUpdateProfile = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(40),
+    about: Joi.string().required().min(2).max(200),
   }),
 });
 
@@ -47,7 +47,7 @@ module.exports.validateUpdateAvatar = celebrate({
 
 module.exports.validateCreateCard = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(40),
     link: Joi.string().required().custom(validateURL),
   }),
 });
