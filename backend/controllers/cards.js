@@ -1,24 +1,12 @@
 const Card = require("../models/card");
 
-const handleError = (err, res) => {
-  if (err.name === "ValidationError" || err.name === "CastError") {
-    return res.status(400).send({ message: "Dados inválidos" });
-  }
-
-  if (err.name === "DocumentNotFoundError") {
-    return res.status(404).send({ message: "Cartão não encontrado" });
-  }
-
-  return res.status(500).send({ message: "Erro padrão" });
-};
-
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({
@@ -27,44 +15,45 @@ module.exports.createCard = (req, res) => {
     owner: req.user._id,
   })
     .then((card) => res.status(201).send(card))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail()
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
-        return res.status(403).send({
-          message: "Você não tem permissão para excluir este cartão",
-        });
+        const error = new Error(
+          "Você não tem permissão para excluir este cartão",
+        );
+        error.statusCode = 403;
+        throw error;
       }
 
-      return Card.findByIdAndDelete(req.params.cardId).then((deletedCard) =>
-        res.send(deletedCard),
-      );
+      return Card.findByIdAndDelete(req.params.cardId);
     })
-    .catch((err) => handleError(err, res));
+    .then((deletedCard) => res.send(deletedCard))
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },
+    { returnDocument: "after" },
   )
     .orFail()
     .then((card) => res.send(card))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true },
+    { returnDocument: "after" },
   )
     .orFail()
     .then((card) => res.send(card))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
