@@ -16,8 +16,8 @@ The project includes:
 
 ## Live Project
 
-- **Frontend:** http://34.10.168.10
-- **Backend API:** http://34.10.168.10:3000
+- **Frontend:** http://charlesaround.mooo.com
+- **Backend API:** http://api.charlesaround.mooo.com:3000
 
 ---
 

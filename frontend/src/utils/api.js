@@ -72,7 +72,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "http://api.charlesaround.mooo.com:3000",
+  baseUrl: "https://api.charlesaround.mooo.com",
 });
 
 export default api;

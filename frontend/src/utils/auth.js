@@ -1,4 +1,4 @@
-const BASE_URL = "http://api.charlesaround.mooo.com:3000";
+const BASE_URL = "https://api.charlesaround.mooo.com";
 
 function checkResponse(res) {
   if (res.ok) {
